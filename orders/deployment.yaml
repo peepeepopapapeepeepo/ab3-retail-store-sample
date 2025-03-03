@@ -1,0 +1,102 @@
+---
+# Source: retail-store-sample-orders-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders
+  namespace: orders
+  labels:
+    app.kubernetes.io/name: orders
+    app.kubernetes.io/instance: orders
+    app.kubernetes.io/component: service
+    app.kuberneres.io/owner: retail-store-sample
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: orders
+      app.kubernetes.io/instance: orders
+      app.kubernetes.io/component: service
+      app.kuberneres.io/owner: retail-store-sample
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        app.kubernetes.io/name: orders
+        app.kubernetes.io/instance: orders
+        app.kubernetes.io/component: service
+        app.kuberneres.io/owner: retail-store-sample
+    spec:
+      serviceAccountName: orders
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: orders
+          env:
+            - name: JAVA_OPTS
+              value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: aurora-credential
+                  key: db_username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: aurora-credential
+                  key: db_password
+          envFrom:
+            - secretRef:
+                name: orders-rabbitmq
+            - configMapRef:
+                name: orders
+            - secretRef:
+                name: aurora-credential
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: "711387113538.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-ab3-apse1-poc-001/retail-store/orders:0.8.4"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 45
+            periodSeconds: 3
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 128m
+              memory: 512Mi
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
+            - name: order-db
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
+        - name: order-db
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "orders-db"

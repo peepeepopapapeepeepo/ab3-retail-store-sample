@@ -1,0 +1,9 @@
+---
+# Source: retail-store-sample-assets-chart/templates/configmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: assets
+  namespace: assets
+data:
+  PORT: '8080'

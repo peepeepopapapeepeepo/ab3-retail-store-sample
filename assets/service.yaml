@@ -1,0 +1,26 @@
+---
+# Source: retail-store-sample-assets-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: assets
+  namespace: assets
+  labels:
+    helm.sh/chart: assets-0.8.4
+    app.kubernetes.io/name: assets
+    app.kubernetes.io/instance: assets
+    app.kubernetes.io/component: service
+    app.kuberneres.io/owner: retail-store-sample
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: assets
+    app.kubernetes.io/instance: assets
+    app.kubernetes.io/component: service
+    app.kuberneres.io/owner: retail-store-sample

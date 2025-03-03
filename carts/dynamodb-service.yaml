@@ -1,0 +1,22 @@
+---
+# Source: retail-store-sample-cart-chart/templates/dynamodb-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: carts-dynamodb
+  namespace: carts
+  labels:
+    app.kubernetes.io/name: carts
+    app.kubernetes.io/instance: carts
+    app.kubernetes.io/component: dynamodb
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: dynamodb
+      protocol: TCP
+      name: dynamodb
+  selector:
+    app.kubernetes.io/name: carts
+    app.kubernetes.io/instance: carts
+    app.kubernetes.io/component: dynamodb

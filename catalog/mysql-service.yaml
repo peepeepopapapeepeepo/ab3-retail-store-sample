@@ -1,0 +1,22 @@
+---
+# Source: retail-store-sample-catalog-chart/templates/
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-mysql
+  namespace: catalog
+  labels:
+    app.kubernetes.io/name: catalog
+    app.kubernetes.io/instance: catalog
+    app.kubernetes.io/component: mysql
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+      targetPort: mysql
+      protocol: TCP
+      name: mysql
+  selector:
+    app.kubernetes.io/name: catalog
+    app.kubernetes.io/instance: catalog
+    app.kubernetes.io/component: mysql

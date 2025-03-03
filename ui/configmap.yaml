@@ -1,0 +1,13 @@
+---
+# Source: retail-store-sample-ui-chart/templates/configmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ui
+  namespace: ui
+data:
+  ENDPOINTS_ASSETS: http://assets.assets.svc:80
+  ENDPOINTS_CARTS: http://carts.carts.svc:80
+  ENDPOINTS_CATALOG: http://catalog.catalog.svc:80
+  ENDPOINTS_CHECKOUT: http://checkout.checkout.svc:80
+  ENDPOINTS_ORDERS: http://orders.orders.svc:80

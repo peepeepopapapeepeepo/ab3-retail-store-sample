@@ -1,0 +1,10 @@
+---
+# Source: retail-store-sample-checkout-chart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: checkout
+  namespace: checkout
+data:
+  REDIS_URL: "redis://valkey-ab3-apse1-poc-001.eedhuy.ng.0001.apse1.cache.amazonaws.com:6379"
+  ENDPOINTS_ORDERS: "http://orders.orders.svc:80"
