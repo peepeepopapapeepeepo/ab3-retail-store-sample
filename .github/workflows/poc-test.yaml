@@ -16,7 +16,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
           role-to-assume: arn:aws:iam::711387113538:role/AB3-GitHub-PipelineAccess
-          role-session-name: Test IAM Role
+          role-session-name: ab3-retail-store-sample
           aws-region: ${{ env.AWS_REGION }}
       # Upload a file to AWS s3
       - name: List S3
