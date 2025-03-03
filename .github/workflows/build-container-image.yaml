@@ -16,6 +16,7 @@ on:
         - ui
       tag:
         description: 'Container Image Tag'
+        required: true
 env:
   AWS_REGION: "ap-southeast-1"
   AWS_ECR_ARN: "ecr-ab3-apse1-poc-001/retail-store"
