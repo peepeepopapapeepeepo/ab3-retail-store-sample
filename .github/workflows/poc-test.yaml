@@ -1,0 +1,24 @@
+name: AWS example workflow
+on:
+  push
+env:
+  AWS_REGION : "ap-southeast-1"
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  ListS3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4        
+      - name: configure aws credentials
+        uses: uses: aws-actions/configure-aws-credentials@v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::711387113538:role/AB3-GitHub-PipelineAccess
+          role-session-name: Test IAM Role
+          aws-region: ${{ env.AWS_REGION }}
+      # Upload a file to AWS s3
+      - name: List S3
+        run: |
+          aws s3 ls
