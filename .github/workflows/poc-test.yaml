@@ -9,7 +9,7 @@ permissions:
   contents: read
 jobs:
   ListS3:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, ab3]
     environment: poc
     steps:
       - name: Git clone the repository
