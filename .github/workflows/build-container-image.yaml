@@ -47,4 +47,5 @@ jobs:
         run: |
           id -a
           docker build src/$APP -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          && docker image rm $REGISTRY/$REPOSITORY:$IMAGE_TAG
