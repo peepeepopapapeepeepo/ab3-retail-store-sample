@@ -45,5 +45,6 @@ jobs:
           REPOSITORY: "${{ env.AWS_ECR_ARN }}/${{ github.event.inputs.app }}"
           IMAGE_TAG: ${{ github.event.inputs.tag }}
         run: |
+          id -a
           docker build src/$APP -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
