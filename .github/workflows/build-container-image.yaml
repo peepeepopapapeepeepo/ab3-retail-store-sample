@@ -1,0 +1,49 @@
+name: Build Container Image
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        type: choice
+        description: 'Application Name'
+        required: true
+        options:
+        - assets
+        - cart
+        - catalog
+        - checkout
+        - orders
+        - ui
+      tag:
+        description: 'Container Image Tag'
+env:
+  AWS_REGION: "ap-southeast-1"
+  AWS_ECR_ARN: "ecr-ab3-apse1-poc-001/retail-store"
+  AWS_ROLE_ARN: "arn:aws:iam::711387113538:role/AB3-GitHub-PipelineAccess"
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  BuildContainerImage:
+    runs-on: [self-hosted, linux, ab3]
+    environment: poc
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.IAM_ROLE }}
+          role-session-name: ab3-retail-store-sample
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          APP: ${{ github.event.inputs.app }}
+          REPOSITORY: "${{ env.AWS_ECR_ARN }}/${{ github.event.inputs.app }}"
+          IMAGE_TAG: ${{ github.event.inputs.tag }}
+        run: |
+          docker build src/$APP -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
