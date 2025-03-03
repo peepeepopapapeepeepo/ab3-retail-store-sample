@@ -5,6 +5,7 @@ on:
       app:
         type: choice
         description: 'Application Name'
+        default: ui
         required: true
         options:
         - assets
