@@ -1,8 +1,9 @@
-name: AWS example workflow
+name: Deploy App on EKS
 on:
   workflow_dispatch:
 env:
-  AWS_REGION : "ap-southeast-1"
+  AWS_REGION: "ap-southeast-1"
+  EKS_CLUSTER_NAME: "eks-ab3-apse1-poc-001"
 permissions:
   id-token: write
   contents: read
@@ -19,7 +20,7 @@ jobs:
           role-to-assume: arn:aws:iam::711387113538:role/AB3-GitHub-PipelineAccess
           role-session-name: ab3-retail-store-sample
           aws-region: ${{ env.AWS_REGION }}
-      # Upload a file to AWS s3
-      - name: List S3
-        run: |
-          aws s3 ls
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+      - name: run kubectl
+        run: kubectl get pods -A
