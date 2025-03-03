@@ -1,6 +1,6 @@
 name: AWS example workflow
 on:
-  push
+  workflow_dispatch:
 env:
   AWS_REGION : "ap-southeast-1"
 permissions:
@@ -13,7 +13,7 @@ jobs:
       - name: Git clone the repository
         uses: actions/checkout@v4        
       - name: configure aws credentials
-        uses: uses: aws-actions/configure-aws-credentials@v4.1.0
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
           role-to-assume: arn:aws:iam::711387113538:role/AB3-GitHub-PipelineAccess
           role-session-name: Test IAM Role
