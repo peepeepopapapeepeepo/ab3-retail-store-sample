@@ -44,4 +44,4 @@ jobs:
           APP: ${{ github.event.inputs.app }}
           MANIFEST: ${{ github.event.inputs.manifest }}
         run: |
-          kubectl deploy -f deploy/$APP/$MANIFEST
+          kubectl apply -f deploy/$APP/$MANIFEST
