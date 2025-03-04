@@ -100,14 +100,14 @@
   - Click `Run workflow`
 - Edit `deploy/ui/deployment.yaml`, change tag from `0.8.4` to `0.8.5`
 - Deploy new version of `ui`
-    - Go to GitHub and run `01 - Deploy Foundation App on EKS`
+    - Go to GitHub and run `01 - Deploy App on EKS`
       - Fill in `Application Name` =  `ui`
       - Click `Kubernetes Manifest file name` = `deployment.yaml`
     - Check Application Running
 
         ``` bash
-        kubectl -u ui get cm
-        kubectl -u ui get po
+        kubectl -n ui get pod
+        kubectl -n ui get pod -o yaml | grep image: | sort -u
         ```
 - Test access from Internet -> https://ab3.sawitmee.cc
 
