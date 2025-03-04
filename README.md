@@ -42,32 +42,48 @@
   - Go to GitHub and run `02 - Deploy App on EKS`
     - Fill in `app` = `checkout-overrided`
     - Click `Run workflow`
+  - Restart pod
+      ``` bash
+      kubectl -n checkout rollout restart deploy checkout
+      ```
   - Check Application Running
 
       ``` bash
-      kubectl -u checkout get cm
-      kubectl -u checkout get po
+      kubectl -n checkout describe cm checkout
+      kubectl -n checkout get po
       ```
   
   - Delete local Redis
 
       ``` bash
+      kubectl -n checkout delete deploy checkout-redis
+      kubectl -n checkout delete svc checkout-redis
       ``` 
 
 - Let orders use Aurora for PostgreSQL
   - Go to GitHub and run `02 - Deploy App on EKS`
     - Fill in `app` =  `orders-overrided`
     - Click `Run workflow`
+  - Restart pod
+
+      ``` bash
+      kubectl -n orders rollout restart deployment orders
+      ```
+      
   - Check Application Running
 
       ``` bash
-      kubectl -u orders get cm
-      kubectl -u orders get po
+      kubectl -n orders describe cm orders
+      kubectl -n orders describe secretproviderclass
+      kubectl -n orders get po
       ```
 
   - Delete local PostgreSQL
 
       ``` bash
+      kubectl -n orders delete sts orders-postgresql
+      kubectl -n orders delete svc orders-postgresql
+      kubectl -n orders delete secret orders-db
       ```
 
 - Test access from Internet -> https://ab3.sawitmee.cc
