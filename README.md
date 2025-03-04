@@ -39,7 +39,7 @@
 ### Change to use AWS PaaS without application change
 
 - Let checkout use ElastiCache for Valkey 
-  - Go to GitHub and run `01 - Deploy Foundation App on EKS`
+  - Go to GitHub and run `02 - Deploy App on EKS`
     - Fill in `app` = `checkout-overrided`
     - Click `Run workflow`
   - Check Application Running
@@ -55,7 +55,7 @@
       ``` 
 
 - Let orders use Aurora for PostgreSQL
-  - Go to GitHub and run `01 - Deploy Foundation App on EKS`
+  - Go to GitHub and run `02 - Deploy App on EKS`
     - Fill in `app` =  `orders-overrided`
     - Click `Run workflow`
   - Check Application Running

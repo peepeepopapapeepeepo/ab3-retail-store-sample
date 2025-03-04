@@ -11,7 +11,9 @@ on:
         - cart
         - catalog
         - checkout
+        - checkout-overrided
         - orders
+        - orders-overrided
         - ui
         default: ui
       manifest:
