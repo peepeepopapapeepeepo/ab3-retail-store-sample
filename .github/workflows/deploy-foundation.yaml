@@ -1,22 +1,6 @@
-name: 02 - Deploy App on EKS
+name: 01 - Deploy Foundation App on EKS
 on:
   workflow_dispatch:
-    inputs:
-      app:
-        type: choice
-        description: 'Application Name'
-        required: true
-        options:
-        - assets
-        - cart
-        - catalog
-        - checkout
-        - orders
-        - ui
-        default: ui
-      manifest:
-        description: 'Specify Kubernetes Manifest file name'
-        required: false
 env:
   AWS_REGION: "ap-southeast-1"
   AWS_EKS_NAME: "eks-ab3-apse1-poc-001"
@@ -30,7 +14,7 @@ jobs:
     environment: poc
     steps:
       - name: Git clone the repository
-        uses: actions/checkout@v4        
+        uses: actions/checkout@v4
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
@@ -44,4 +28,9 @@ jobs:
           APP: ${{ github.event.inputs.app }}
           MANIFEST: ${{ github.event.inputs.manifest }}
         run: |
-          kubectl apply -f deploy/$APP/$MANIFEST
+          kubectl apply -f deploy/assets/
+          kubectl apply -f deploy/carts/
+          kubectl apply -f deploy/catalog/
+          kubectl apply -f deploy/checkout/
+          kubectl apply -f deploy/orders/
+          kubectl apply -f deploy/ui/

@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: rabbitmq
-          image: "711387113538.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-ab3-apse1-poc-001/rabbitmq:3-management"
+          image: "public.ecr.aws/docker/library/rabbitmq:3-management"
           imagePullPolicy: IfNotPresent
           ports:
           - name: amqp

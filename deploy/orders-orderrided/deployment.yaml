@@ -45,18 +45,20 @@ spec:
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: orders-db
-                  key: username
+                  name: aurora-credential
+                  key: db_username
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: orders-db
-                  key: password
+                  name: aurora-credential
+                  key: db_password
           envFrom:
             - secretRef:
                 name: orders-rabbitmq
             - configMapRef:
                 name: orders
+            - secretRef:
+                name: aurora-credential
           securityContext:
             capabilities:
               drop:
@@ -85,7 +87,16 @@ spec:
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume
+            - name: order-db
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
       volumes:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+        - name: order-db
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "orders-db"

@@ -7,5 +7,5 @@ metadata:
   namespace: orders
 data:
   RETAIL_ORDERS_MESSAGING_PROVIDER: rabbitmq
-  SPRING_DATASOURCE_URL: jdbc:postgresql://orders-postgresql.orders.svc:5432/orders
+  SPRING_DATASOURCE_URL: jdbc:postgresql://rds-ab3-apse1-poc-001.cluster-c3u22ackc17m.ap-southeast-1.rds.amazonaws.com:5432/orders
   SPRING_RABBITMQ_ADDRESSES: amqp://orders-rabbitmq.orders.svc:5672

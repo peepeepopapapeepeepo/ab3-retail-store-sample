@@ -1,4 +1,4 @@
-name: Build Container Image
+name: 03 - Build Container Image
 on:
   workflow_dispatch:
     inputs:
