@@ -28,6 +28,7 @@ jobs:
           APP: ${{ github.event.inputs.app }}
           MANIFEST: ${{ github.event.inputs.manifest }}
         run: |
+          kubectl apply -f deploy/namespaces.yaml
           kubectl apply -f deploy/assets/
           kubectl apply -f deploy/carts/
           kubectl apply -f deploy/catalog/
