@@ -35,9 +35,9 @@ jobs:
           kubectl -n orders rollout restart deployment orders
           
           echo " ===>  Delete Local PostgreSQL <=== "
-          kubectl -n orders delete sts orders-postgresql
-          kubectl -n orders delete svc orders-postgresql
-          kubectl -n orders delete secret orders-db
+          kubectl -n orders delete sts orders-postgresql --ignore-not-found
+          kubectl -n orders delete svc orders-postgresql --ignore-not-found
+          kubectl -n orders delete secret orders-db --ignore-not-found
 
           echo " ===> Show New Configure <=== "
           kubectl -n checkout wait --for=condition=Ready --timeout=30s pods -l app.kuberneres.io/owner=retail-store-sample
