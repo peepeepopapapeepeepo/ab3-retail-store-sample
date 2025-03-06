@@ -1,4 +1,5 @@
 name: 03 - Let Orders use Aurora for PostgreSQL
+on:
   workflow_dispatch:
 env:
   AWS_REGION: "ap-southeast-1"
