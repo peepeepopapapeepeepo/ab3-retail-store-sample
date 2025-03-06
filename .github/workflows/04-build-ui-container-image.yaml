@@ -1,0 +1,57 @@
+name: 04 - Build UI Container Image and Deploy
+on:
+  workflow_dispatch:
+env:
+  AWS_REGION: "ap-southeast-1"
+  AWS_ECR_ARN: "ecr-ab3-apse1-poc-001/retail-store"
+  AWS_ROLE_ARN: "arn:aws:iam::711387113538:role/AB3-GitHub-PipelineAccess"
+  APP: ui
+  IMAGE_TAG: "0.8.5"
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  BuildContainerImage:
+    runs-on: ubuntu-latest
+    environment: poc
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.IAM_ROLE }}
+          role-session-name: ab3-retail-store-sample
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          APP: ${{ env.APP }}
+          REPOSITORY: "${{ env.AWS_ECR_ARN }}/${{ env.APP }}"
+        run: |
+          docker build src/$APP -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          && docker image rm $REGISTRY/$REPOSITORY:$IMAGE_TAG
+  DeployAppToEKS:
+    runs-on: [self-hosted, linux, ab3]
+      environment: poc
+      steps:
+        - name: Git clone the repository
+          uses: actions/checkout@v4        
+        - name: Configure aws credentials
+          uses: aws-actions/configure-aws-credentials@v4.1.0
+          with:
+            role-to-assume: ${{ env.AWS_ROLE_ARN }}
+            role-session-name: ab3-retail-store-sample
+            aws-region: ${{ env.AWS_REGION }}
+        - name: Update kube config
+          run: aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }} --region ${{ env.AWS_REGION }}
+        - name: Deploy app
+          env:
+            APP: ${{ github.event.inputs.app }}
+            MANIFEST: ${{ github.event.inputs.manifest }}
+          run: |
+            kubectl apply -f deploy/$APP-upgrade/

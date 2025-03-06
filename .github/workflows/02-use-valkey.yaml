@@ -38,7 +38,9 @@ jobs:
           kubectl -n checkout delete deploy checkout-redis
           kubectl -n checkout delete svc checkout-redis
 
-          echo " ===> Show New Configure <=== "
           kubectl -n checkout wait --for=condition=Ready --timeout=30s pods -l app.kuberneres.io/owner=retail-store-sample
+
+          echo " ===> Show New Config Map <=== "
           kubectl -n checkout describe cm checkout
+          echo " ===> Show Pods <=== "
           kubectl -n checkout get po
