@@ -28,19 +28,19 @@ jobs:
           APP: ${{ github.event.inputs.app }}
           MANIFEST: ${{ github.event.inputs.manifest }}
         run: |
-          echo " ===> Deploy <=== "
+          echo -e "\n ===> Deploy <=== "
           kubectl apply -f deploy/orders-overrided/
 
-          echo " ===>  Restart Pod <=== "
+          echo -e "\n ===>  Restart Pod <=== "
           kubectl -n orders rollout restart deployment orders
           
-          echo " ===>  Delete Local PostgreSQL <=== "
+          echo -e "\n ===>  Delete Local PostgreSQL <=== "
           kubectl -n orders delete sts orders-postgresql
           kubectl -n orders delete svc orders-postgresql
           kubectl -n orders delete secret orders-db
 
-          echo " ===> Show New Configure <=== "
+          echo -e "\n ===> Show New Configure <=== "
           kubectl -n checkout wait --for=condition=Ready --timeout=30s pods -l app.kuberneres.io/owner=retail-store-sample
-          kubectl -n orders describe cm orders
-          kubectl -n orders describe secretproviderclass
-          kubectl -n orders get po
+          kubectl -n orders get cm orders -o yaml
+          kubectl -n orders get secretproviderclass -o yaml
+          kubectl -n orders get po -o yaml
