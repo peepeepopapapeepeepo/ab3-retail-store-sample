@@ -35,8 +35,8 @@ jobs:
           kubectl -n checkout rollout restart deploy checkout
           
           echo " ===>  Delete Local Redis <=== "
-          kubectl -n checkout delete deploy checkout-redis
-          kubectl -n checkout delete svc checkout-redis
+          kubectl -n checkout delete deploy checkout-redis --ignore-not-found
+          kubectl -n checkout delete svc checkout-redis --ignore-not-found
 
           kubectl -n checkout wait --for=condition=Ready --timeout=30s pods -l app.kuberneres.io/owner=retail-store-sample
 
