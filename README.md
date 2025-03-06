@@ -38,27 +38,29 @@
 
 ### Change to use AWS PaaS without application change
 
-- Let checkout use ElastiCache for Valkey 
+- Let checkout use ElastiCache for Valkey
   - Go to GitHub and run `02 - Deploy App on EKS`
     - Fill in `app` = `checkout-overrided`
     - Click `Run workflow`
   - Restart pod
+
       ``` bash
       kubectl -n checkout rollout restart deploy checkout
       ```
+
   - Check Application Running
 
       ``` bash
       kubectl -n checkout describe cm checkout
       kubectl -n checkout get po
       ```
-  
+
   - Delete local Redis
 
       ``` bash
       kubectl -n checkout delete deploy checkout-redis
       kubectl -n checkout delete svc checkout-redis
-      ``` 
+      ```
 
 - Let orders use Aurora for PostgreSQL
   - Go to GitHub and run `02 - Deploy App on EKS`
@@ -69,7 +71,7 @@
       ``` bash
       kubectl -n orders rollout restart deployment orders
       ```
-      
+
   - Check Application Running
 
       ``` bash
@@ -94,14 +96,13 @@
 
 - Edit `src/ui/src/main/resources/static/assets/css/styles.css`
 - Go to GitHub and run `03 - Build Container Image`
-  - Fill in 
+  - Fill in
     - `Application Name` =  `ui`
     - `Tag` = `0.8.5`
   - Click `Run workflow`
-- Edit `deploy/ui/deployment.yaml`, change tag from `0.8.4` to `0.8.5`
 - Deploy new version of `ui`
     - Go to GitHub and run `01 - Deploy App on EKS`
-      - Fill in `Application Name` =  `ui`
+      - Fill in `Application Name` =  `ui-upgrade`
       - Click `Kubernetes Manifest file name` = `deployment.yaml`
     - Check Application Running
 
@@ -109,19 +110,14 @@
         kubectl -n ui get pod
         kubectl -n ui get pod -o yaml | grep image: | sort -u
         ```
+
 - Test access from Internet -> https://ab3.sawitmee.cc
 
 ### Show EKS autoscaling by using load generator
 
-- Show **HPA**
-
-    ``` bash
-    kubectl -n ui get hpa
-    ```
-
 - Show **Metric Server**
 
-    ``` bash 
+    ``` bash
     kubectl -n kube-system get pod -l app.kubernetes.io/name=metrics-server
     ```
 
@@ -131,6 +127,12 @@
     kubectl top node
     kubectl top pods
     ```
+
+- Deploy HPA of **ui**
+    - Go to GitHub and run `01 - Deploy App on EKS`
+      - Fill in `Application Name` =  `ui-hpa`
+      - Click `Kubernetes Manifest file name` = `hpa.yaml`
+    - Check Application Running
 
 - Run load generator inside EKS cluster
 
@@ -152,14 +154,11 @@
     kubectl delete pod load-generator
     ```
 
-### Show monitoring --> Container Insight
+### Show monitoring ( Container Insight )
 
-### Show CloudWatch Alarm
+-  https://console.aws.amazon.com/cloudwatch
 
 ### Add Cache in CloudFront
 
-- Walk through CloudFront cache behavior
-- Run Terraform
-- Test
-
-### Show upgrade EKS
+- Enable cache for `/assets/*.jpg`
+- Move static content to S3
