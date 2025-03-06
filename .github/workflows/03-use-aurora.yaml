@@ -39,8 +39,11 @@ jobs:
           kubectl -n orders delete svc orders-postgresql --ignore-not-found
           kubectl -n orders delete secret orders-db --ignore-not-found
 
-          echo " ===> Show New Configure <=== "
           kubectl -n checkout wait --for=condition=Ready --timeout=30s pods -l app.kuberneres.io/owner=retail-store-sample
-          kubectl -n orders get cm orders -o yaml
-          kubectl -n orders get secretproviderclass -o yaml
-          kubectl -n orders get po -o yaml
+
+          echo " ===> Show New Config Map <=== "
+          kubectl -n orders describe cm orders
+          echo " ===> Show New Secret Provider Class <=== "
+          kubectl -n orders describe secretproviderclass
+          echo " ===> Show Pods <=== "
+          kubectl -n orders get po
