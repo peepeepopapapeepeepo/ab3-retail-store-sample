@@ -24,23 +24,22 @@ jobs:
       - name: Update kube config
         run: aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }} --region ${{ env.AWS_REGION }}
       - name: Deploy app
-        continue-on-error: true
         env:
           APP: ${{ github.event.inputs.app }}
           MANIFEST: ${{ github.event.inputs.manifest }}
         run: |
-          echo -e "\n ===> Deploy <=== "
+          echo " ===> Deploy <=== "
           kubectl apply -f deploy/orders-overrided/
 
-          echo -e "\n ===>  Restart Pod <=== "
+          echo " ===>  Restart Pod <=== "
           kubectl -n orders rollout restart deployment orders
           
-          echo -e "\n ===>  Delete Local PostgreSQL <=== "
+          echo " ===>  Delete Local PostgreSQL <=== "
           kubectl -n orders delete sts orders-postgresql
           kubectl -n orders delete svc orders-postgresql
           kubectl -n orders delete secret orders-db
 
-          echo -e "\n ===> Show New Configure <=== "
+          echo " ===> Show New Configure <=== "
           kubectl -n checkout wait --for=condition=Ready --timeout=30s pods -l app.kuberneres.io/owner=retail-store-sample
           kubectl -n orders get cm orders -o yaml
           kubectl -n orders get secretproviderclass -o yaml
