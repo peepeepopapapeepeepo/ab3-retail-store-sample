@@ -4,6 +4,7 @@ on:
 env:
   AWS_REGION: "ap-southeast-1"
   AWS_ECR_ARN: "ecr-ab3-apse1-poc-001/retail-store"
+  AWS_EKS_NAME: "eks-ab3-apse1-poc-001"
   AWS_ROLE_ARN: "arn:aws:iam::711387113538:role/AB3-GitHub-PipelineAccess"
   APP: ui
   IMAGE_TAG: "0.8.5"
