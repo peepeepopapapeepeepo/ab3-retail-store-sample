@@ -28,89 +28,24 @@
 ### Deploy foundation application
 
 - Go to GitHub and run `01 - Deploy Foundation App on EKS`
-- Check Application Running
-
-  ``` bash
-  kubectl get pods -A
-  ```
-
 - Test access from Internet -> https://ab3.sawitmee.cc
 
 ### Change to use AWS PaaS without application change
 
 - Let checkout use ElastiCache for Valkey
-  - Go to GitHub and run `02 - Deploy App on EKS`
-    - Fill in `app` = `checkout-overrided`
-    - Click `Run workflow`
-  - Restart pod
-
-      ``` bash
-      kubectl -n checkout rollout restart deploy checkout
-      ```
-
-  - Check Application Running
-
-      ``` bash
-      kubectl -n checkout describe cm checkout
-      kubectl -n checkout get po
-      ```
-
-  - Delete local Redis
-
-      ``` bash
-      kubectl -n checkout delete deploy checkout-redis
-      kubectl -n checkout delete svc checkout-redis
-      ```
+  - Go to GitHub and run `02 - Let Checkout use ElastiCache for Valkey`
+  - Test access from Internet -> https://ab3.sawitmee.cc
 
 - Let orders use Aurora for PostgreSQL
-  - Go to GitHub and run `02 - Deploy App on EKS`
-    - Fill in `app` =  `orders-overrided`
-    - Click `Run workflow`
-  - Restart pod
-
-      ``` bash
-      kubectl -n orders rollout restart deployment orders
-      ```
-
-  - Check Application Running
-
-      ``` bash
-      kubectl -n orders describe cm orders
-      kubectl -n orders describe secretproviderclass
-      kubectl -n orders get po
-      ```
-
-  - Delete local PostgreSQL
-
-      ``` bash
-      kubectl -n orders delete sts orders-postgresql
-      kubectl -n orders delete svc orders-postgresql
-      kubectl -n orders delete secret orders-db
-      ```
-
-- Test access from Internet -> https://ab3.sawitmee.cc
+  - Go to GitHub and run `03 - Let Orders use Aurora for PostgreSQL`
+  - Test access from Internet -> https://ab3.sawitmee.cc
 
 ### Update Application and Deploy with GitHub
 
 > Change banner from blue to green
 
 - Edit `src/ui/src/main/resources/static/assets/css/styles.css`
-- Go to GitHub and run `03 - Build Container Image`
-  - Fill in
-    - `Application Name` =  `ui`
-    - `Tag` = `0.8.5`
-  - Click `Run workflow`
-- Deploy new version of `ui`
-    - Go to GitHub and run `01 - Deploy App on EKS`
-      - Fill in `Application Name` =  `ui-upgrade`
-      - Click `Kubernetes Manifest file name` = `deployment.yaml`
-    - Check Application Running
-
-        ``` bash
-        kubectl -n ui get pod
-        kubectl -n ui get pod -o yaml | grep image: | sort -u
-        ```
-
+- Go to GitHub and run `04 - Build UI Container Image and Deploy`
 - Test access from Internet -> https://ab3.sawitmee.cc
 
 ### Show EKS autoscaling by using load generator
@@ -129,10 +64,7 @@
     ```
 
 - Deploy HPA of **ui**
-    - Go to GitHub and run `01 - Deploy App on EKS`
-      - Fill in `Application Name` =  `ui-hpa`
-      - Click `Kubernetes Manifest file name` = `hpa.yaml`
-    - Check Application Running
+    - Go to GitHub and run `05 - Let UI use HPA`
 
 - Run load generator inside EKS cluster
 
@@ -146,6 +78,8 @@
 
     ``` bash
     kubectl -n ui get hpa ui --watch
+    watch kubectl -n ui get pods
+    watch kubectl get nodes
     ```
 
 - Delete load generator
@@ -154,11 +88,17 @@
     kubectl delete pod load-generator
     ```
 
-### Show monitoring ( Container Insight )
+### Show monitoring
 
--  https://console.aws.amazon.com/cloudwatch
+- https://console.aws.amazon.com/cloudwatch
+  - Container Insight
+  - Metrics
+  - Logs
 
 ### Add Cache in CloudFront
 
 - Enable cache for `/assets/*.jpg`
+  - `terraform apply`
 - Move static content to S3
+  - `terraform apply`
+  - Go to GitHub and run `06 - Delete Assets`
