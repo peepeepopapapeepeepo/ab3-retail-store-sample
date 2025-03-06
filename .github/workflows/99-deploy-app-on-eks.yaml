@@ -1,4 +1,4 @@
-name: 02 - Deploy App on EKS
+name: 99 - Deploy App on EKS
 on:
   workflow_dispatch:
     inputs:
