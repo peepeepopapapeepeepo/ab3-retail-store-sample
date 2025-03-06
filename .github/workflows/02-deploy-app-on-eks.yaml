@@ -15,6 +15,8 @@ on:
         - orders
         - orders-overrided
         - ui
+        - ui-hpa
+        - ui-upgrade
         default: ui
       manifest:
         description: 'Specify Kubernetes Manifest file name'
