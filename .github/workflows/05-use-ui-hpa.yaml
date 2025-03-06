@@ -1,0 +1,35 @@
+name: 05 - Let UI use HPA
+on:
+  workflow_dispatch:
+env:
+  AWS_REGION: "ap-southeast-1"
+  AWS_EKS_NAME: "eks-ab3-apse1-poc-001"
+  AWS_ROLE_ARN: "arn:aws:iam::711387113538:role/AB3-GitHub-PipelineAccess"
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  DeployAppToEKS:
+    runs-on: [self-hosted, linux, ab3]
+    environment: poc
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4.1.0
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          role-session-name: ab3-retail-store-sample
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }} --region ${{ env.AWS_REGION }}
+      - name: Deploy app
+        env:
+          APP: ${{ github.event.inputs.app }}
+          MANIFEST: ${{ github.event.inputs.manifest }}
+        run: |
+          echo " ===> Deploy <=== "
+          kubectl apply -f deploy/ui-hpa/
+
+          echo " ===> Show New HPA <=== "
+          kubectl -n ui get hpa ui
