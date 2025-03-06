@@ -36,6 +36,7 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG \
           && docker image rm $REGISTRY/$REPOSITORY:$IMAGE_TAG
   DeployAppToEKS:
+    needs: BuildContainerImage
     runs-on: [self-hosted, linux, ab3]
     environment: poc
     steps:
