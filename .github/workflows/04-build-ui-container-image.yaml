@@ -53,4 +53,13 @@ jobs:
         run: aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }} --region ${{ env.AWS_REGION }}
       - name: Deploy app
         run: |
+          echo " ===> Deploy <=== "
           kubectl apply -f deploy/${{ env.APP }}-upgrade/
+
+          kubectl -n ui wait --for=condition=Ready --timeout=30s pods -l app.kuberneres.io/owner=retail-store-sample
+
+          echo " ===> Show Pods <=== "
+          kubectl -n ui get po -L app.kuberneres.io/owner=retail-store-sample 
+
+          echo " ===> Show Pods <=== "
+          kubectl -n ui get po -L app.kuberneres.io/owner=retail-store-sample -o yaml | grep image: | sort -u
