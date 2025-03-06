@@ -52,8 +52,5 @@ jobs:
       - name: Update kube config
         run: aws eks update-kubeconfig --name ${{ env.AWS_EKS_NAME }} --region ${{ env.AWS_REGION }}
       - name: Deploy app
-        env:
-          APP: ${{ github.event.inputs.app }}
-          MANIFEST: ${{ github.event.inputs.manifest }}
         run: |
-          kubectl apply -f deploy/$APP-upgrade/
+          kubectl apply -f deploy/${{ env.APP }}-upgrade/
