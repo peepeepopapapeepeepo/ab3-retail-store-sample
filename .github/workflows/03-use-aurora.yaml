@@ -1,5 +1,4 @@
-name: 02 - Let Checkout use ElastiCache for Valkey
-on:
+name: 03 - Let Orders use Aurora for PostgreSQL
   workflow_dispatch:
 env:
   AWS_REGION: "ap-southeast-1"
@@ -29,16 +28,18 @@ jobs:
           MANIFEST: ${{ github.event.inputs.manifest }}
         run: |
           echo " ===> Deploy <=== "
-          kubectl apply -f deploy/checkout-overrided/
+          kubectl apply -f deploy/orders-overrided/
 
           echo " ===>  Restart Pod <=== "
-          kubectl -n checkout rollout restart deploy checkout
+          kubectl -n orders rollout restart deployment orders
           
-          echo " ===>  Delete Local Redis <=== "
-          kubectl -n checkout delete deploy checkout-redis
-          kubectl -n checkout delete svc checkout-redis
+          echo " ===>  Delete Local PostgreSQL <=== "
+          kubectl -n orders delete sts orders-postgresql
+          kubectl -n orders delete svc orders-postgresql
+          kubectl -n orders delete secret orders-db
 
           echo " ===> Show New Configure <=== "
           kubectl -n checkout wait --for=condition=Ready --timeout=30s pods -l app.kuberneres.io/owner=retail-store-sample
-          kubectl -n checkout describe cm checkout
-          kubectl -n checkout get po
+          kubectl -n orders describe cm orders
+          kubectl -n orders describe secretproviderclass
+          kubectl -n orders get po
