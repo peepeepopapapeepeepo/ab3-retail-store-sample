@@ -4,7 +4,7 @@ metadata:
   name: ui
   namespace: ui
 spec:
-  maxReplicas: 10
+  maxReplicas: 20
   minReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
